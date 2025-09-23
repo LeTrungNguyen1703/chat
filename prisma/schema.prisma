@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -9,7 +8,7 @@ datasource db {
 }
 
 model chat_rooms {
-  id           BigInt         @id @default(autoincrement())
+  id           Int            @id @default(autoincrement())
   name         String
   created_at   DateTime?      @default(now()) @db.Timestamptz(6)
   messages     messages[]
@@ -17,9 +16,9 @@ model chat_rooms {
 }
 
 model messages {
-  id           BigInt     @id @default(autoincrement())
-  user_id      BigInt
-  chat_room_id BigInt
+  id           Int        @id @default(autoincrement())
+  user_id      Int
+  chat_room_id Int
   content      String
   sent_at      DateTime?  @default(now()) @db.Timestamptz(6)
   chat_rooms   chat_rooms @relation(fields: [chat_room_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -27,9 +26,9 @@ model messages {
 }
 
 model participants {
-  id           BigInt     @id @default(autoincrement())
-  user_id      BigInt
-  chat_room_id BigInt
+  id           Int        @id @default(autoincrement())
+  user_id      Int
+  chat_room_id Int
   joined_at    DateTime?  @default(now()) @db.Timestamptz(6)
   chat_rooms   chat_rooms @relation(fields: [chat_room_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users        users      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -38,7 +37,7 @@ model participants {
 }
 
 model users {
-  id            BigInt         @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   username      String         @unique
   email         String         @unique
   password_hash String

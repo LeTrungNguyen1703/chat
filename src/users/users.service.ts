@@ -1,11 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
+  constructor(private readonly prisma: PrismaService) {}
+
   create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    try {
+      return this.prisma.users.create({
+        data: createUserDto,
+      });
+    } catch (error) {
+      this.handleUsernameOrEmailConflict(error);
+      throw error;
+    }
   }
 
   findAll() {
@@ -22,5 +33,13 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  private handleUsernameOrEmailConflict(error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') {
+        throw new ConflictException(`${error.meta?.target} already exists`);
+      }
+    }
   }
 }

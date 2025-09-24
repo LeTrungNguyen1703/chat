@@ -6,6 +6,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { jwtConstants } from './constants';
 import { AuthGuard } from './auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+
+
+
 
 @Module({
   controllers: [AuthController],

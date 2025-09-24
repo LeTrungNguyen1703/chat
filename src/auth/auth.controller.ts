@@ -12,9 +12,15 @@ import {
 import { AuthService } from './auth.service';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { LoginRequest } from './dto/create-auth.dto';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { AuthGuard } from './auth.guard';
 import { JwtPayload } from './interfaces/jwtPayload';
+import { Public } from '../common/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -43,6 +49,7 @@ export class AuthController {
     description: 'Unauthorized. Invalid credentials.',
   })
   @Post('login')
+  @Public()
   signIn(@Body() loginRequest: LoginRequest) {
     return this.authService.signIn(loginRequest);
   }

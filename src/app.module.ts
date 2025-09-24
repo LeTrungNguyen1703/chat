@@ -10,6 +10,8 @@ import { ParticipantsService } from './participants/participants.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/auth.guard';
 
 @Module({
   imports: [
@@ -25,6 +27,10 @@ import { ConfigModule } from '@nestjs/config';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, ParticipantsService, ChatRoomsService],
+  providers: [
+    AppService,
+    ParticipantsService,
+    ChatRoomsService,
+  ],
 })
 export class AppModule {}

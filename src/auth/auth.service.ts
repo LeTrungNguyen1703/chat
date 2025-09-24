@@ -5,11 +5,13 @@ import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/jwtPayload';
+import { Public } from '../common/decorators/public.decorator';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {}
 
+  @Public()
   async signIn(loginRequest: LoginRequest) {
     const user = await this.handleMissingCredentials(loginRequest);
 

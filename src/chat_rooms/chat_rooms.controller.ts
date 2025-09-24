@@ -12,7 +12,17 @@ export class ChatRoomsController {
   @Post()
   @ApiOperation({ summary: 'Create a chat room' })
   @ApiBody({ type: CreateChatRoomDto })
-  @ApiResponse({ status: 201, description: 'The chat room has been created.', type: CreateChatRoomDto })
+  @ApiResponse({ status: 201, description: 'The chat room has been created.', schema: {
+    type: 'object',
+    properties: {
+      id: { type: 'integer', example: 1 },
+      name: { type: 'string', example: 'General' },
+      messages: { type: 'array', example: 'A message of chat' },
+      participants: { type: 'array', example: 'A participant of chat' },
+      createdAt: { type: 'string', format: 'date-time', example: '2023-01-01T00:00:00.000Z' },
+      updatedAt: { type: 'string', format: 'date-time', example: '2023-01-01T00:00:00.000Z' },
+    },
+    } })
   create(@Body() createChatRoomDto: CreateChatRoomDto) {
     return this.chatRoomsService.create(createChatRoomDto);
   }

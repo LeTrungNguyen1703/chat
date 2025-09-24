@@ -12,6 +12,10 @@ async function bootstrap() {
     .setTitle('Chat API')
     .setDescription('Realtime chat API')
     .setVersion('1.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access-token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -4,6 +4,7 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from './interfaces/jwtPayload';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +13,7 @@ export class AuthService {
   async signIn(loginRequest: LoginRequest) {
     const user = await this.handleMissingCredentials(loginRequest);
 
-    const payload = {sub: user.id, username: user.username}
+    const payload: JwtPayload = {sub: user.id, username: user.username}
     return {
       access_token: await this.jwtService.signAsync(payload)
     }

@@ -1,26 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginRequest } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { UsersService } from '../users/users.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  create(loginRequest: LoginRequest) {
-    return 'This action adds a new auth';
+  constructor(private readonly usersService: UsersService) {}
+
+  async validateUser(loginRequest: LoginRequest) {
+    const user = await this.handleMissingCredentials(loginRequest);
+
+
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  private async handleMissingCredentials(loginRequest: LoginRequest) {
+    const { username, password } = loginRequest;
+    const user = await this.usersService.findOneByUsername(username);
+    if (!bcrypt.compareSync(password, user.password_hash)) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    return user;
   }
 }

@@ -1,17 +1,26 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     try {
-      return this.prisma.users.create({
+      const saltRounds = 10;
+      createUserDto.password_hash = await bcrypt.hash(
+        createUserDto.password_hash,
+        saltRounds,
+      );
+      return await this.prisma.users.create({
         data: createUserDto,
+        omit: {
+          password_hash: true,
+        },
       });
     } catch (error) {
       this.handleUsernameOrEmailConflict(error);
@@ -19,12 +28,26 @@ export class UsersService {
     }
   }
 
-  findAll() {
+  async findAll() {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOneById(id: number) {
+    try {
+      return await this.prisma.users.findUniqueOrThrow({ where: { id } });
+    } catch (error) {
+      this.handleIdNotFound(error);
+      throw error;
+    }
+  }
+
+  async findOneByUsername(username: string) {
+    try {
+      return await this.prisma.users.findUniqueOrThrow({ where: { username } });
+    } catch (error) {
+      this.handleIdNotFound(error);
+      throw error;
+    }
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -39,6 +62,14 @@ export class UsersService {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
         throw new ConflictException(`${error.meta?.target} already exists`);
+      }
+    }
+  }
+
+  private handleIdNotFound(error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`${error.meta?.cause}`);
       }
     }
   }

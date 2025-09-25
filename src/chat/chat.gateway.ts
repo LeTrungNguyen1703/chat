@@ -38,6 +38,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(roomName).emit(event, data);
   }
 
+  @SubscribeMessage('joinRoom')
+  handleJoinRoom(client: Socket, roomId: string) {
+    client.join(roomId);
+    console.log(`Socket ${client.id} joined room: ${roomId}`);
+    client.emit('roomJoined', roomId);
+  }
+
   @UseGuards(AuthGuardWebSocket)
   @SubscribeMessage('newMessage')
   async handleMessage(client: any, payload: CreateMessageDto) {

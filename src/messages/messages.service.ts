@@ -17,7 +17,7 @@ export class MessagesService {
 
   async create(createMessageDto: CreateMessageDto, user_id: number) {
     return this.prisma.messages.create({
-      data: { ...createMessageDto, user_id },
+      data: { ...createMessageDto, user_id }
     });
   }
 

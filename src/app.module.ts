@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
+import { ChatGateway } from './chat/chat.gateway';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { AuthGuard } from './auth/auth.guard';
     AppService,
     ParticipantsService,
     ChatRoomsService,
+    ChatGateway,
   ],
 })
 export class AppModule {}

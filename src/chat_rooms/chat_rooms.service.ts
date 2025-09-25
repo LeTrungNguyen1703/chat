@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateChatRoomDto } from './dto/create-chat_room.dto';
 import { UpdateChatRoomDto } from './dto/update-chat_room.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { UserChatCompoIdDto } from '../chat/dto/compotion-key.dto';
 
 @Injectable()
 export class ChatRoomsService {
@@ -31,7 +32,8 @@ export class ChatRoomsService {
     }
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return this.prisma.chat_rooms.delete({ where: { id } });
   }
+
 }

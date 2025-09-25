@@ -13,6 +13,7 @@ model chat_rooms {
   created_at   DateTime?      @default(now()) @db.Timestamptz(6)
   messages     messages[]
   participants participants[]
+  isPublic     Boolean        @default(true)
 
   @@index([name])
 }

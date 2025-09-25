@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { CreateParticipantDto } from './dto/create-participant.dto';
 import { UpdateParticipantDto } from './dto/update-participant.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { WsException } from '@nestjs/websockets';
+import { ChatRoomsService } from '../chat_rooms/chat_rooms.service';
 
 @Injectable()
 export class ParticipantsService {
-  create(createParticipantDto: CreateParticipantDto) {
-    return 'This action adds a new participant';
+  constructor(
+    private readonly prisma: PrismaService,
+  ) {}
+
+
+  async joinChatRoom(createParticipantDto: CreateParticipantDto) {
+    try {
+      return this.prisma.participants.create({
+        data: createParticipantDto,
+      });
+    } catch (error) {
+      if (error.code === 'P2003') {
+        throw new WsException(`User or Chat Room not found ${error.message}`);
+      }
+    }
   }
 
-  findAll() {
-    return `This action returns all participants`;
+  async findAll() {
+    return this.prisma.participants.findMany({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} participant`;
+  async findOne(id: number) {
+    return this.prisma.participants.findUnique({where: {id}})
   }
 
-  update(id: number, updateParticipantDto: UpdateParticipantDto) {
-    return `This action updates a #${id} participant`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} participant`;
+  async remove(id: number) {
+    return this.prisma.participants.delete({where: {id}})
   }
 }

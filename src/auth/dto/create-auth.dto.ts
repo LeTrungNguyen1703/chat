@@ -8,7 +8,7 @@ export class LoginRequest {
   @IsNotEmpty({ message: 'Username is required' })
   username: string;
 
-  @ApiProperty({ example: 'strong_password_123', description: 'The password of the user' })
+  @ApiProperty({ example: 'hashed_password', description: 'The password of the user' })
   @IsString({ message: 'Password must be a string' })
   @IsNotEmpty({ message: 'Password is required' })
   password: string;

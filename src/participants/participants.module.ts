@@ -8,6 +8,6 @@ import { ChatModule } from '../chat/chat.module';
 @Module({
   controllers: [ParticipantsController],
   providers: [ParticipantsService],
-  imports: [ChatModule]
+  exports: [ParticipantsService],
 })
 export class ParticipantsModule {}

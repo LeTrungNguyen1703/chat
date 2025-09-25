@@ -7,10 +7,7 @@ import { ChatRoomsService } from '../chat_rooms/chat_rooms.service';
 
 @Injectable()
 export class ParticipantsService {
-  constructor(
-    private readonly prisma: PrismaService,
-  ) {}
-
+  constructor(private readonly prisma: PrismaService) {}
 
   async joinChatRoom(createParticipantDto: CreateParticipantDto) {
     try {
@@ -29,11 +26,17 @@ export class ParticipantsService {
   }
 
   async findOne(id: number) {
-    return this.prisma.participants.findUnique({where: {id}})
+    return this.prisma.participants.findUnique({ where: { id } });
   }
 
   async remove(id: number) {
-    return this.prisma.participants.delete({where: {id}})
+    return this.prisma.participants.delete({ where: { id } });
   }
 
+  async findChatRoomsByUserId(sub: number) {
+    return this.prisma.participants.findMany({
+      where: { user_id: sub },
+      select: { chat_room_id: true },
+    });
+  }
 }

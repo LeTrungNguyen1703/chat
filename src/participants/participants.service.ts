@@ -35,4 +35,5 @@ export class ParticipantsService {
   async remove(id: number) {
     return this.prisma.participants.delete({where: {id}})
   }
+
 }

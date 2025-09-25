@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ChatRoomsService } from './chat_rooms.service';
 import { CreateChatRoomDto } from './dto/create-chat_room.dto';
 import { UpdateChatRoomDto } from './dto/update-chat_room.dto';
@@ -12,17 +20,29 @@ export class ChatRoomsController {
   @Post()
   @ApiOperation({ summary: 'Create a chat room' })
   @ApiBody({ type: CreateChatRoomDto })
-  @ApiResponse({ status: 201, description: 'The chat room has been created.', schema: {
-    type: 'object',
-    properties: {
-      id: { type: 'integer', example: 1 },
-      name: { type: 'string', example: 'General' },
-      messages: { type: 'array', example: 'A message of chat' },
-      participants: { type: 'array', example: 'A participant of chat' },
-      createdAt: { type: 'string', format: 'date-time', example: '2023-01-01T00:00:00.000Z' },
-      updatedAt: { type: 'string', format: 'date-time', example: '2023-01-01T00:00:00.000Z' },
+  @ApiResponse({
+    status: 201,
+    description: 'The chat room has been created.',
+    schema: {
+      type: 'object',
+      properties: {
+        id: { type: 'integer', example: 1 },
+        name: { type: 'string', example: 'General' },
+        messages: { type: 'array', example: 'A message of chat' },
+        participants: { type: 'array', example: 'A participant of chat' },
+        createdAt: {
+          type: 'string',
+          format: 'date-time',
+          example: '2023-01-01T00:00:00.000Z',
+        },
+        updatedAt: {
+          type: 'string',
+          format: 'date-time',
+          example: '2023-01-01T00:00:00.000Z',
+        },
+      },
     },
-    } })
+  })
   create(@Body() createChatRoomDto: CreateChatRoomDto) {
     return this.chatRoomsService.create(createChatRoomDto);
   }
@@ -44,7 +64,10 @@ export class ChatRoomsController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update a chat room' })
   @ApiResponse({ status: 200, description: 'Updated chat room.' })
-  update(@Param('id') id: string, @Body() updateChatRoomDto: UpdateChatRoomDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateChatRoomDto: UpdateChatRoomDto,
+  ) {
     return this.chatRoomsService.update(+id, updateChatRoomDto);
   }
 
@@ -53,5 +76,26 @@ export class ChatRoomsController {
   @ApiResponse({ status: 200, description: 'Deleted chat room.' })
   remove(@Param('id') id: string) {
     return this.chatRoomsService.remove(+id);
+  }
+
+  @Get('get-all-public-rooms')
+  @ApiOperation({ summary: 'Get all rooms was public' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all public rooms.',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'integer', example: 1 },
+          name: { type: 'string', example: 'General' },
+          isPublic: { type: 'boolean', example: true },
+        },
+      },
+    },
+  })
+  getAllPublicRooms() {
+    return this.chatRoomsService.getAllPublicRooms();
   }
 }

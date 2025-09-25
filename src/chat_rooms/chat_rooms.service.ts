@@ -36,4 +36,7 @@ export class ChatRoomsService {
     return this.prisma.chat_rooms.delete({ where: { id } });
   }
 
+  async getAllPublicRooms() {
+    return this.prisma.chat_rooms.findMany({ where: { isPublic: true } });
+  }
 }
